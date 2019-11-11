@@ -11,7 +11,6 @@ package com.mycompany.adtarea02;
  */
 public class Noticia {
     String texto;
-    String uri;
     //Dejamos el constructor por defecto.
     public String getTexto() {
         return texto;
@@ -21,17 +20,10 @@ public class Noticia {
         this.texto = texto;
     }
 
-    public String getUri() {
-        return uri;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
     @Override
     public String toString() {
-        return "Noticia:\n" + texto + "\n\buri=" + uri+"\n********************************************************************\n\n";
+        return "************************************************************************************************\nNoticia:\n" + texto 
+                + "\n************************************************************************************************\n";
     }
     
     

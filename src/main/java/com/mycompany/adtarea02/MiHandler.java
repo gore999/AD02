@@ -34,12 +34,7 @@ class MiHandler extends DefaultHandler{
                     noticiaAux.setTexto(titulo);
                 }
                 break;
-            case "link":
-                if(noticiaAux!=null){
-                    String direccion=buffer.toString();
-                    noticiaAux.setUri(direccion);
-                    break;    
-                }
+            
         }
     }
 
@@ -53,9 +48,7 @@ class MiHandler extends DefaultHandler{
             case "title":
                 buffer.delete(0, buffer.length());//vaciamos el buffer.
                 break;
-            case "link":
-                buffer.delete(0, buffer.length());
-                break;       
+                
         }
     }
     
