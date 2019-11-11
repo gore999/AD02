@@ -26,16 +26,15 @@ public class ADTarea02 {
     /**
      * @param args the command line arguments
      */
-       private static final String elPaisDir="http://ep00.epimg.net/rss/elpais/portada.xml";
+       private static final String elPaisDir="http://ep00.epimg.net/rss/elpais/portada.xml"; //Url de las noticias del El Pais en RSS.
 
     //METODO MAIN. Crea un Data, recupera datos del archivo y lanza un menu.
     public static void main(String[] args) {
         //Iniciamos un objeto tipo Data
-       Data data=new Data();
-       Data aux=ADTarea02.recoverData();
-       if(aux!=null){data=aux;}
-       System.out.println(data.toString());
-       menu(data);
+       Data data=new Data();// objeto que almacena los datos
+       Data aux=ADTarea02.recoverData();// Intentamos cargar los datos
+       if(aux!=null){data=aux;}// Si damos instanciado el auxiliar a partir de la carga de un JSON, lo igualamos al objeto principal, si no, nos quedamos con el data con constructor por defecto.
+       menu(data);//ejecuta el menu
 
     }
    
@@ -46,13 +45,11 @@ public class ADTarea02 {
         Data dataAux=null;
         FileReader fr=null;
         BufferedReader br=null;
-       
         try {
             fr=new FileReader(Data.archivo);
             br=new BufferedReader(fr);
             String json=br.readLine();
-            dataAux=g.fromJson(json, Data.class);
-           
+            dataAux=g.fromJson(json, Data.class);//Con el Json, creamos un objeto de la clase Data
         } catch (FileNotFoundException ex) {System.out.println("No existe archivo");
         } catch (IOException ex) {System.out.println("Error IO");
         } finally{//Cerramos los streams.
@@ -60,15 +57,13 @@ public class ADTarea02 {
                 br.close();
                 fr.close();
             }
-            //Creamos un objeto tipo Data desde el json.
-            //Asignamos a los atributos del objeto los del objeto auxiliar.
             catch (IOException ex) {
                 System.out.println("Error IO");
             }catch(Exception ex){}
         }
         return dataAux;
     }
-      //METODO menu
+    //METODO menu
     public static void menu(Data data){
          int eleccion;
          boolean salir=false;
@@ -85,6 +80,7 @@ public class ADTarea02 {
                      + "8.- Eliminar cliente\n"
                      + "9.- Crear copia de seguridad\n"
                      + "10.- Ver titulares de El Pais\n"
+                    + "11.- Mostrar los datos (añadido a mayores de lo que pide el ejercicio)\n"
                     + "0.- Salir");
             eleccion = Integer.parseInt(readString("Elija una opcion;"));
             switch(eleccion){
@@ -101,7 +97,7 @@ public class ADTarea02 {
                     }else{
                        System.out.println("La tienda no existe.");//Mensaje de que la tienda no existe.
                     }
-                        break;
+                    break;
                 case 4:
                     t=searchTienda(data);//Recuperamos la tienda
                     if(t!=null){//si obtenemos una tienda...
@@ -159,6 +155,7 @@ public class ADTarea02 {
     }
     
     //GESTION TIENDAS--------------------------------------------------------------------------------
+    //Buscar una tienda en el objeto Data
     private static Tienda searchTienda(Data data){
         ArrayList<Tienda> tiendas=data.tiendasLista;
         String nombre=readString("Introduzca nombre de la tienda");
@@ -172,12 +169,14 @@ public class ADTarea02 {
         }
         return null;//Si acaba el bucle sin coincidencias, devuelve null.
     }
+    //Añadir una tienda a un objeto Data
     private static void addTienda(Data data) {
         String nombre=readString("Introduzca nombre de la nueva tienda");
         String ciudad=readString("\"Introduzca ciudad donde se va a encontrar la tienda\n");
         Tienda t=new Tienda(nombre, ciudad);
         data.tiendasLista.add(t);
     }
+    //Eliminar una tienda de un objeto Data.
     private static int borraTienda(Data data) {
         int contador=0;
         Tienda t=searchTienda(data);
@@ -188,6 +187,7 @@ public class ADTarea02 {
         return contador;
     }
     //GESTION PRODUCTOS--------------------------------------------------------
+    //Devuelve un producto de una tienda a partir de su id.
     private static Producto searchProducto(Tienda tienda, int id){
         ArrayList<Producto> productos=tienda.getProductos();
         for(int i=productos.size()-1;i>=0;i--){// Empiezo por el final porque al borrar un indice, los siguientes reducen en 1 el suyo (problema de 2 tiendas iguales consecutivas, el salto hace que se pase por alto).
@@ -199,6 +199,7 @@ public class ADTarea02 {
         }
         return null;//Si acaba el bucle sin coincidencias, devuelve null.
     }
+    //Añade un producto a una tienda.
     private static void addProducto(Tienda tienda) {
         //Solicitar los datos del producto a añadir.-----------------------------------------------------------------------------------------
         int id=Integer.parseInt(readString("Introduzca identificador del nuevo producto:"));
@@ -217,6 +218,7 @@ public class ADTarea02 {
             p.setCantidad(cantidad);
         }
     }
+    //Borrar un producto de una tienda.
     private static int deleteProducto(Tienda tienda) {
         int contador=0;
         int id=Integer.parseInt(readString("Introduzca id del producto:"));
@@ -229,19 +231,20 @@ public class ADTarea02 {
         return contador;
     }
     //GESTION DE EMPLEADOS.
+    //Añade un empleado a una tienda.
     private static void addEmpleado(Tienda tienda) {
         String nombre=readString("Introduzca Nombre del empleado:");
         String apellidos=readString("Introduzca descripción del producto:");
-        
         Empleado nuevoEmpleado=new Empleado(nombre,apellidos);
-        //Comprobar si el producto ya existe en la tienda. Se cargará el producto o quedará como null, segun exista o no.---------------------
+        //Comprobar si el empleado ya existe en la tienda. Se cargará el empleado o quedará como null, segun exista o no.---------------------
         Empleado e=searchEmpleado(tienda,nuevoEmpleado);
-        if(e==null){
+        if(e==null){//Si no lo hay, añado el empleado a la tienda..
             tienda.getEmpleados().add(nuevoEmpleado);
-        }else{//El empleado ya existe, se actualiza.
+        }else{//El empleado ya existe, solo mandamos un mensaje.
             System.out.println("El empleado ya existe en esa tienda.");
         }
     }
+    //Busca eun empleado en una tienda. Recibe un objeto empleado que se crea antes(podrían enviarse solo las cadenas que tiene como atributos.
     private static Empleado searchEmpleado(Tienda tienda,Empleado empAux){
         ArrayList<Empleado> empleados=tienda.getEmpleados();
         for(int i=empleados.size()-1;i>=0;i--){// Empiezo por el final porque al borrar un indice, los siguientes reducen en 1 el suyo (problema empleado duplicado, el salto hace que se pase por alto).
@@ -253,11 +256,12 @@ public class ADTarea02 {
         }
         return null;//Si acaba el bucle sin coincidencias, devuelve null.
     }
+    //Borra un empleado de una tienda.
     private static int deleteEmpleado(Tienda tienda){
         int contador=0;
         Empleado empAux=new Empleado(readString("Nombre del empleado a borrar"),readString("Apellido del empleado a borrar"));
         
-        Empleado e=searchEmpleado(tienda,empAux);
+        Empleado e=searchEmpleado(tienda,empAux); //Intentamos buscar el empleado auxiliar en la lista de empleados 
         if(e!=null){
             tienda.getEmpleados().remove(e);
             contador++;
@@ -295,7 +299,8 @@ public class ADTarea02 {
         }
         return null;//Si acaba el bucle sin coincidencias, devuelve null.
     }
-    private static int deleteCliente(Data data ){
+    //borrar un cliente
+    private static int deleteCliente(Data data ){ //Borra un cliente 
         int contador=0;
         String nomAux=readString("Nombre del Cliente a borrar");
         String apelAux=readString("Apellido del Cliente a borrar");

@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
  * @author Carlos
  */
 public class NoticiasParser {
+    //Clase encargada de parsear un documento xml. El resultado se almacena en el Handler.
     SAXParserFactory saxParserFactory=SAXParserFactory.newInstance();
     SAXParser saxParser;
     MiHandler dh;

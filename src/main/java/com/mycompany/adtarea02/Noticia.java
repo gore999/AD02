@@ -9,13 +9,13 @@ package com.mycompany.adtarea02;
  *
  * @author Carlos
  */
-public class Noticia {
-    String texto;
+public class Noticia {//Clase para albergar los datos de una noticia. 
+    String texto;//Contiene el titular de la noticia.
     //Dejamos el constructor por defecto.
+    //Getters y Setters 
     public String getTexto() {
         return texto;
     }
-
     public void setTexto(String texto) {
         this.texto = texto;
     }
